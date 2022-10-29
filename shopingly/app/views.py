@@ -47,7 +47,7 @@ def show_cart(request):
                 totalamount = amount + shipping_amount
             return render(request, 'app/addtocart.html',{'carts':cart,'totalamount':totalamount,'amount':amount})
         else:
-            return render(request,'app.emptycart.html')
+            return render(request,'app/emptycart.html')
 
 
 
@@ -87,7 +87,8 @@ def address(request):
     return render(request, 'app/address.html',{'add':add,'active':'btn-primary'})
 
 def orders(request):
- return render(request, 'app/orders.html')
+    op = OrderPlaced.objects.filter(user = request.user)
+    return render(request, 'app/orders.html',{'order_placed':op})
 
 
 
@@ -115,6 +116,16 @@ def butomwear(request):
 
 def login(request):
  return render(request, 'app/login.html')
+
+def paymentdone(request):
+    user = request.user
+    custid = request.GET.get('custid')
+    customer = Customer.objects.get(id=custid)
+    cart = Cart.objects.filter(user = user)
+    for c in cart:
+        OrderPlaced(user=user,customer=customer,product=c.product,quantity=c.quantity).save()
+        c.delete()
+    return redirect("orders")
  
 def checkout(request):
     user = request.user

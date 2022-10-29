@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('buy/', views.buy_now, name='buy-now'),
 
+    path('paymentdone/', views.paymentdone, name='paymentdone'),
+
     path('profile/', views.ProfileView.as_view(), name='profile'),
 
     path('address/', views.address, name='address'),
